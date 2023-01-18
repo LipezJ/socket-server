@@ -1,27 +1,12 @@
-import socket
+import pickle
+from server import socketServer
 
-# Crear un socket
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+def mensaje(data, client):
+    print(data['post'], end=' -> ')
+    client.send(pickle.dumps({'result':data['post']}))
 
-# Asociar el socket a una dirección IP y puerto
-server_socket.bind(('0.0.0.0', 1234))
+server = socketServer('localhost', 8080)
 
-# Escuchar conexiones entrantes
-server_socket.listen()
+server.addFunction('mensaje', mensaje)
 
-# Crear una lista para almacenar los sockets de los clientes conectados
-client_sockets = []
-
-while True:
-    # Aceptar una conexión
-    client_socket, client_address = server_socket.accept()
-    print('Conexión desde: ', client_address)
-    client_sockets.append(client_socket)
-    print(client_sockets)
-
-    # Recibir datos del cliente
-    data = client_socket.recv(1024)
-    print('Recibido: ', data.decode())
-
-    # Enviar datos al cliente
-    client_socket.send(data)
+server.startServer()

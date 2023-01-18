@@ -1,16 +1,33 @@
 import socket
 import pickle
+import threading
+import select
 import time
+import uuid
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect(("localhost", 12345))
+class socketClient:
+    def __init__(self, host: str, port: int):
+        self.host = host
+        self.port = port
+        self.functions = {}
+        self.socket_ = None
+        self.id = None
 
-for i in range(10):
-    s.send(pickle.dumps({'func':'sumar', 'data':{'num1': 1, 'num2': i}}))
+    def connect(self):
+        self.socket_ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)   
+        self.socket_.connect((self.host, self.port))
+        self._connected({})
+        print(self.id)
+        
+    def _connected(self, data):
+        self.socket_.send(pickle.dumps(data))
+        data = pickle.loads(self.socket_.recv(1024))
+        self.id = data['id']
 
-    data = pickle.loads(s.recv(1024))
-    print("Received data:", data)
-
-    time.sleep(1)
-
-s.close()
+    def do(self, data):
+        if self.id != None:
+            data['id'] = self.id
+        if 'func' in data and 'data' in data:
+            self.socket_.send(pickle.dumps(data))
+    def receive(self):
+        return pickle.loads(self.socket_.recv(1024))

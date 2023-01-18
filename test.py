@@ -2,19 +2,20 @@ import socket
 import pickle
 import time
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)   
-s.connect(("localhost", 12345))
+from client import socketClient
+
+s = socketClient('localhost', 8080)
+s.connect()
 
 t = True
 post = ' '
 
 while len(post) > 0 or t:
     t = False
-
     post = input('ingrese un mensaje: ')
+    s.do({'func':'mensaje', 'data':{'post':post}})
+    data = s.receive()
 
-    s.send(pickle.dumps({'func':'mensaje', 'data':{'post':post}}))
-    data = pickle.loads(s.recv(1024))
     print(data)
 
 s.close()
