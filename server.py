@@ -1,16 +1,15 @@
 import socket
 import pickle
-import threading
 import select
 import time
-import uuid
-import re
+
+from socketDict import socketDict
 
 class socketServer:
     def __init__(self, host: str, port: int):
         self.host = host
         self.port = port
-        self.sockets = {}
+        self.sockets = socketDict()
         self.functions = {}
         self.rooms = {}
         self.server = None
@@ -18,22 +17,21 @@ class socketServer:
     #handle sockets
     def _handleSocket(self):
         while True:
-            list_ = [i['client'] for i in self.sockets.values()]
+            list_ = [i for i in self.sockets.bySocket.values()]
             ready_rsockets, ready_wsockets, err = select.select(list_, list_, [])
             if len(ready_rsockets) > 0:
                 for socket in ready_rsockets:
                     if socket is self.server:
                         client, address = socket.accept()
-                        host, id = address  
-                        self.sockets[id] = {'client': client, 'id': id}
+                        host, id = address
+                        self.sockets.add(id, client)
                         client.send(pickle.dumps({'id': id}))
                         print(address, 'conectado')
                     else:
                         data = socket.recv(1024)
                         if not data:
-                            id = int(re.search(r'[0-9]{5}', str(socket)).group()) # provisional
                             print(id, 'desconectado')
-                            self.sockets.pop(id)
+                            self.sockets.remove(socket)
                         else:
                             if socket in ready_wsockets:
                                 data = pickle.loads(data)
@@ -67,5 +65,5 @@ class socketServer:
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.bind((self.host, self.port))
         self.server.listen()
-        self.sockets['server'] = {'client': self.server, id: 'server'}
+        self.sockets.add(0, self.server)
         self._handleSocket()
