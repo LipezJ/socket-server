@@ -4,6 +4,7 @@ import threading
 import select
 import time
 import uuid
+import re
 
 class socketServer:
     def __init__(self, host: str, port: int):
@@ -12,42 +13,39 @@ class socketServer:
         self.sockets = {}
         self.functions = {}
         self.rooms = {}
+        self.server = None
 
-    #handle funcs
-    def _handleClient(self):
+    #handle sockets
+    def _handleSocket(self):
         while True:
-            try:
-                for socket_ in self.sockets:
-                    self._handleSocket(self.sockets[socket_])
-            except:
-                continue
-    def _handleSocket(self, socket_):
-        client = socket_['client']
-        client.settimeout(0.05)
-        try:
-            data = client.recv(1024)
-            if not data:
-                print(client, 'desconectado')
-                self.sockets.pop(socket_['id'], {})
-                return 0
-            else:
-                data = pickle.loads(data)
-            try:
-                if data['func'] in self.functions:
-                    self.functions[data['func']](data['data'], client)
-                    print(data['id'])
-                elif data['room'] in self.rooms:
-                    self.sendAll(data, client)
-            except KeyError:
-                return 0
-        except socket.timeout:
-            return 0
+            list_ = [i['client'] for i in self.sockets.values()]
+            ready_rsockets, ready_wsockets, err = select.select(list_, list_, [])
+            if len(ready_rsockets) > 0:
+                for socket in ready_rsockets:
+                    if socket is self.server:
+                        client, address = socket.accept()
+                        host, id = address  
+                        self.sockets[id] = {'client': client, 'id': id}
+                        client.send(pickle.dumps({'id': id}))
+                        print(address, 'conectado')
+                    else:
+                        data = socket.recv(1024)
+                        if not data:
+                            id = int(re.search(r'[0-9]{5}', str(socket)).group()) # provisional
+                            print(id, 'desconectado')
+                            self.sockets.pop(id)
+                        else:
+                            if socket in ready_wsockets:
+                                data = pickle.loads(data)
+                                if data['func']:
+                                    self.functions[data['func']](data['data'], socket)
+                                print('id:', data['id'])
+            time.sleep(0.1)
 
     #functions to manage
     def addFunction(self, name: str, func):
         if name not in self.functions and func:
             self.functions[name] = func
-        print('functions:', self.functions)
     
     #rooms func
     def createRoom(self, data, client):
@@ -66,14 +64,8 @@ class socketServer:
                 client_.send({data['name']: data['post']})
     
     def startServer(self):
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.bind((self.host, self.port))
-        s.listen()
-        clients = threading.Thread(target=self._handleClient)
-        clients.start()
-        while True:
-            client, address = s.accept()
-            if client not in self.sockets:
-                uid = uuid.uuid4()
-                self.sockets[uid] = {'client': client, 'room': '', 'id': uid}
-                client.send(pickle.dumps({'id': uid}))
+        self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server.bind((self.host, self.port))
+        self.server.listen()
+        self.sockets['server'] = {'client': self.server, id: 'server'}
+        self._handleSocket()

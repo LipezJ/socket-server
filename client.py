@@ -16,11 +16,10 @@ class socketClient:
     def connect(self):
         self.socket_ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)   
         self.socket_.connect((self.host, self.port))
-        self._connected({})
+        self._connected()
         print(self.id)
         
-    def _connected(self, data):
-        self.socket_.send(pickle.dumps(data))
+    def _connected(self):
         data = pickle.loads(self.socket_.recv(1024))
         self.id = data['id']
 

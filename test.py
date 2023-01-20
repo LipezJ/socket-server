@@ -10,12 +10,12 @@ s.connect()
 t = True
 post = ' '
 
-while len(post) > 0 or t:
-    t = False
+while True:
     post = input('ingrese un mensaje: ')
     s.do({'func':'mensaje', 'data':{'post':post}})
     data = s.receive()
-
+    if not data:
+        continue
     print(data)
 
 s.close()
