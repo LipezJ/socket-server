@@ -28,17 +28,28 @@ class socketServer:
                         client.send(pickle.dumps({'id': id}))
                         print(address, 'conectado')
                     else:
-                        data = socket.recv(1024)
-                        if not data:
+                        try:
+                            data = socket.recv(1024)
+                        except ConnectionResetError:
                             print(id, 'desconectado')
                             self.sockets.remove(socket)
+                            continue
                         else:
                             if socket in ready_wsockets:
                                 data = pickle.loads(data)
                                 if data['func']:
                                     self.functions[data['func']](data['data'], socket)
                                 print('id:', data['id'])
-            time.sleep(0.1)
+    
+    #func to send
+    def sendAll(self, data):
+        list_ = [i for i in self.sockets.bySocket.values()]
+        _, ready_wsockets, err = select.select(list_, list_, [])
+        for socket in ready_wsockets:
+            try:
+                socket.send(pickle.dumps(data))
+            except:
+                continue
 
     #functions to manage
     def addFunction(self, name: str, func):
@@ -55,11 +66,6 @@ class socketServer:
         if data['name'] in self.rooms:
             self.rooms[data['name']].append(client)
             print(self.rooms)
-    def sendAll(self, data, client):
-        print(f'\n\n', self.rooms[data['name']], f'\n\n',)
-        if data['name'] in self.rooms:
-            for client_ in self.rooms[data['name']]:
-                client_.send({data['name']: data['post']})
     
     def startServer(self):
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
