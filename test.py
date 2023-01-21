@@ -10,14 +10,18 @@ def recibir():
         data = s.receive()
         if not data:
             continue
-        print('-> ', end='')
         print(data)
+
+def printPost(data, socket_):
+    print('-> ', data['post'])
 
 s = socketClient('localhost', 8080)
 s.connect()
 
 r = threading.Thread(target=recibir, daemon=True)
 r.start()
+
+s.addFunction('post', printPost)
 
 while True:
     post = input('ingrese un mensaje: ')

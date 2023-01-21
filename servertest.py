@@ -5,7 +5,7 @@ from server import socketServer
 
 def mensaje(data, client):
     print(data['post'], end=' -> ')
-    client.send(pickle.dumps({'result':data['post']}))
+    client.send(pickle.dumps({'func': 'post', 'data':{'post': data['post']}}))
 
 server = socketServer('localhost', 8080)
 server.addFunction('mensaje', mensaje)
