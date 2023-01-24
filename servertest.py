@@ -12,7 +12,7 @@ def mensaje(data, client):
     process = psutil.Process(pid=os.getpid())
     print('mem =', process.memory_info().rss / (1024 * 1024), end=' -> ')
 
-server = servers.serverCiclo('localhost', 8080)
+server = servers.serverMultiHilos('localhost', 8080)
 server.addFunction('mensaje', mensaje)
 
 def sendAll():

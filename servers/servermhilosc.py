@@ -12,10 +12,10 @@ class serverMultiHilosCiclos(socketServer):
         self.host = host
         self.port = port
         self.sockets = socketDict()
-        self.functions = {}
-        self.rooms = {}
         self.server = None
         self.cont = 0
+        self.rooms = {}
+        self.functions = {'join': self.join, 'leaveAll': self.leaveAll, 'leave': self.leave, 'sendToRoom': self.sendToRoom}
 
     #handle sockets
     def _handleSocket(self, socket, id, group):

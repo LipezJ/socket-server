@@ -13,6 +13,7 @@ def recibir():
         print(data)
 
 def printPost(data, socket_):
+    print(data)
     print('-> ', data['post'])
 
 s = socketClient('localhost', 8080)
@@ -23,9 +24,19 @@ r.start()
 
 s.addFunction('post', printPost)
 
+room = input('room: ')
+s.do({'func':'join', 'data':{'room':room, 'id': s.id}})
+time.sleep(.5)
+
 while True:
-    post = input('ingrese un mensaje: ')
-    s.do({'func':'mensaje', 'data':{'post':post}})
+    post = input('mensaje: ')
+    if post == '0':
+        break
+    s.do({'func':'sendToRoom', 'data':{'room':room, 'id': s.id, 'data':{'func': 'post', 'data': {'post': post}}}})
     time.sleep(0.2)
 
-s.close()
+room = input('room: ')
+s.do({'func':'leave', 'data':{'room':room, 'id': s.id}})
+time.sleep(.5)
+
+s.socket_.close()

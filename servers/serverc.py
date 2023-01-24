@@ -12,9 +12,9 @@ class serverCiclo(socketServer):
         self.host = host
         self.port = port
         self.sockets = socketDict()
-        self.functions = {}
-        self.rooms = {}
         self.server = None
+        self.rooms = {}
+        self.functions = {'join': self.join, 'leaveAll': self.leaveAll, 'leave': self.leave, 'sendToRoom': self.sendToRoom}
 
     #handle sockets
     def _handleSocket(self):
@@ -35,6 +35,7 @@ class serverCiclo(socketServer):
                         except ConnectionResetError:
                             print(id, 'desconectado')
                             self.sockets.remove(socket)
+                            self.leaveAll({'id': self.sockets.byId[socket]}, client)
                             continue
                         else:
                             if socket in ready_wsockets:

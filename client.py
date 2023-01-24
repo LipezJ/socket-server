@@ -12,6 +12,7 @@ class socketClient:
         self.functions = {}
         self.socket_ = None
         self.id = None
+        self.room = None
 
     def connect(self):
         self.socket_ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)   
@@ -41,3 +42,7 @@ class socketClient:
     def addFunction(self, name: str, func):
         if name not in self.functions and func:
             self.functions[name] = func
+
+    def join(self, name):
+        self.socket_.send(pickle.dumps({'func':'join', 'data':{'name': name, 'id': self.id}}))
+        self.room = name
