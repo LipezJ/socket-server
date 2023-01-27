@@ -4,7 +4,6 @@ import select
 import time
 import threading
 
-from socketDict import socketDict
 from servers.server import socketServer
 
 class serverMultiHilos(socketServer):
@@ -31,7 +30,6 @@ class serverMultiHilos(socketServer):
                     data = pickle.loads(data)
                     if 'func' in data:
                         self.functions[data['func']](data['data'], socket)
-                    print('id:', data['id'])
     
     #func to send
     def sendAll(self, data):

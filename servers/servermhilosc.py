@@ -4,7 +4,7 @@ import select
 import time
 import threading
 
-from socketDict import socketDict
+from servers.socketDict import socketDict
 from servers.server import socketServer
 
 class serverMultiHilosCiclos(socketServer):

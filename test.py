@@ -25,7 +25,7 @@ s.addFunction('post', printPost)
 
 room = input('room: ')
 if len(room) > 0:
-    s.do({'func':'join', 'data':{'room':room, 'id': s.id}})
+    s.join(room)
 time.sleep(.5)
 
 to = input('usuario: ')
@@ -35,13 +35,12 @@ while True:
     if post == '0':
         break
     if len(room) > 0:
-        s.do({'func':'sendToRoom', 'data':{'room':room, 'id': s.id, 'data':{'func': 'post', 'data': {'post': post}}}})
+        s.roomDo(room, 'post', {'post': post})
     elif len(to) > 0:
-        s.do({'func': 'sendTo', 'data': {'idSender':to, 'data':{'func':'post', 'data':{'post': post+' user'}}}})
+        s.userDo(to, 'post', {'post': post})
     time.sleep(0.2)
 
-room = input('room: ')
-s.do({'func':'leave', 'data':{'room':room, 'id': s.id}})
+s.roomDo('', 'leaveAll', {})
 time.sleep(.5)
 
 s.socket_.close()

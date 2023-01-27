@@ -19,6 +19,7 @@ class socketServer:
     
     #general funcs
     def join(self, data, client):
+        print(data)
         if data['room'] in self.rooms:
             self.rooms[data['room']].append(data['id'])
             print('join to', data['room'], self.rooms)

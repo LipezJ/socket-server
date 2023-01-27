@@ -2,9 +2,8 @@ import socket
 import pickle
 import select
 import time
-import pytimedinput
 
-from socketDict import socketDict
+from servers.socketDict import socketDict
 from servers.server import socketServer
 
 class serverCiclo(socketServer):
