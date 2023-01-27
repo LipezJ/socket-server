@@ -14,7 +14,7 @@ class serverCiclo(socketServer):
         self.sockets = socketDict()
         self.server = None
         self.rooms = {}
-        self.functions = {'join': self.join, 'leaveAll': self.leaveAll, 'leave': self.leave, 'sendToRoom': self.sendToRoom}
+        self.functions = {'join': self.join, 'leaveAll': self.leaveAll, 'leave': self.leave, 'sendToRoom': self.sendToRoom, 'sendTo': self.sendTo}
 
     #handle sockets
     def _handleSocket(self):
@@ -26,8 +26,8 @@ class serverCiclo(socketServer):
                     if socket is self.server:
                         client, address = socket.accept()
                         host, id = address
-                        self.sockets.add(id, client)
-                        client.send(pickle.dumps({'id': id}))
+                        self.sockets.add(str(id), client)
+                        client.send(pickle.dumps({'id': str(id)}))
                         print(address, 'conectado')
                     else:
                         try:

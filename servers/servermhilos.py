@@ -14,7 +14,7 @@ class serverMultiHilos(socketServer):
         self.sockets = {}
         self.server = None
         self.rooms = {}
-        self.functions = {'join': self.join, 'leaveAll': self.leaveAll, 'leave': self.leave, 'sendToRoom': self.sendToRoom}
+        self.functions = {'join': self.join, 'leaveAll': self.leaveAll, 'leave': self.leave, 'sendToRoom': self.sendToRoom, 'sendTo': self.sendTo}
 
     #handle sockets
     def _handleSocket(self, socket, id: str):
@@ -51,6 +51,12 @@ class serverMultiHilos(socketServer):
                 socket.send(pickle.dumps(data['data']))
             except:
                 continue
+    
+    def sendTo(self, data, client):
+        if data['idSender'] in self.sockets:
+            self.sockets[data['idSender']].send(pickle.dumps(data['data']))
+        else:
+            print('este usuario no existe')
     
     def startServer(self):
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

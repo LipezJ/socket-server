@@ -59,3 +59,9 @@ class socketServer:
                     socket.send(pickle.dumps(data['data']))
                 except:
                     continue
+    
+    def sendTo(self, data, client):
+        if data['idSender'] in self.sockets.bySocket:
+            self.sockets.bySocket[data['idSender']].send(pickle.dumps(data['data']))
+        else:
+            print('este usuario no existe')

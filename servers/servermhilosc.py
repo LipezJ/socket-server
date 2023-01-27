@@ -15,7 +15,7 @@ class serverMultiHilosCiclos(socketServer):
         self.server = None
         self.cont = 0
         self.rooms = {}
-        self.functions = {'join': self.join, 'leaveAll': self.leaveAll, 'leave': self.leave, 'sendToRoom': self.sendToRoom}
+        self.functions = {'join': self.join, 'leaveAll': self.leaveAll, 'leave': self.leave, 'sendToRoom': self.sendToRoom, 'sendTo': self.sendTo}
 
     #handle sockets
     def _handleSocket(self, socket, id, group):
@@ -34,6 +34,7 @@ class serverMultiHilosCiclos(socketServer):
                         print(id, 'desconectado')
                         try:
                             self.sockets.remove(socket)
+                            self.leaveAll({'id': self.sockets.byId[socket]}, client)
                         except:
                             break
                         self.cont -= 1
@@ -52,10 +53,9 @@ class serverMultiHilosCiclos(socketServer):
         while True:
             client, address = self.server.accept()
             host, id = address
-            self.sockets.add(id, client)
-            client.send(pickle.dumps({'id': id}))
+            self.sockets.add(str(id), client)
+            client.send(pickle.dumps({'id': str(id)}))
             print(address, 'conectado')
-            print(self.sockets.byId.values())
             if self.cont%4 == 0:
                 print('se crea un nuevo hilo')
                 thread = threading.Thread(target=self._handleSocket, args=(client, id, self.cont), daemon=True)
