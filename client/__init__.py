@@ -1,2 +1,2 @@
-from .client import socketClient
-__all__ = ["socketClient"]
+from .client import Client
+__all__ = ["Client"]
