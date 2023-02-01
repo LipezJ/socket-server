@@ -19,7 +19,6 @@ class socketServer:
     
     #general funcs
     def join(self, data, client):
-        print(data)
         if data['room'] in self.rooms:
             self.rooms[data['room']].append(data['id'])
             print('join to', data['room'], self.rooms)
@@ -53,7 +52,7 @@ class socketServer:
     
     def sendToRoom(self, data, client):
         if data['id'] in self.rooms[data['room']]:
-            list_ = [self.sockets.bySocket[j] for j in [i for i in self.sockets.bySocket if i in self.rooms[data['room']]]]
+            list_ = [self.sockets.bySocket[i] for i in self.rooms[data['room']]]
             _, ready_wsockets, err = select.select(list_, list_, [])
             for socket in ready_wsockets:
                 try:

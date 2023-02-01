@@ -35,12 +35,12 @@ class Client:
             data_ = {'room': room, 'id': self.id}
             self.socket_.send(pickle.dumps({'func': func, 'data': data_}))
         if data is not None and room in self.rooms:
-            data_ = {'func':'sendToRoom', 'data':{'room': room, 'id': self.rooms, 'data':{'data':data, 'func':func}}}
+            data_ = {'func':'sendToRoom', 'data':{'room': room, 'id': self.id, 'data':{'data':data, 'func':func}}}
             self.socket_.send(pickle.dumps(data_))
     
     def userDo(self, func: str, to: str, data={}):
         if data is not None:
-            data_ = {'func': 'sendTo', 'data': {'idSender':to, 'data':{'data':data, 'func':func}}}
+            data_ = {'func': 'sendTo', 'id': self.id, 'data': {'idSender':to, 'data':{'data':data, 'func':func}}}
             self.socket_.send(pickle.dumps(data_))
 
     def receive(self):

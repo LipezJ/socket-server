@@ -41,7 +41,6 @@ class serverCiclo(socketServer):
                                 data = pickle.loads(data)
                                 if data['func']:
                                     self.functions[data['func']](data['data'], socket)
-                                print('id:', data['id'])
             time.sleep(0.1)
     
     def startServer(self):

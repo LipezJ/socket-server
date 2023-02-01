@@ -43,7 +43,6 @@ class serverMultiHilosCiclos(socketServer):
                         data = pickle.loads(data)
                         if 'func' in data:
                             self.functions[data['func']](data['data'], socket)
-                        print('id:', data['id'])
             time.sleep(0.1)
     
     def startServer(self):

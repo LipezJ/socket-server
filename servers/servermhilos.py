@@ -42,7 +42,7 @@ class serverMultiHilos(socketServer):
                 continue
 
     def sendToRoom(self, data, client):
-        list_ = [self.sockets[j] for j in [i for i in self.sockets if i in self.rooms[data['room']]]]
+        list_ = [self.sockets[i] for i in self.rooms[data['room']]]
         _, ready_wsockets, err = select.select(list_, list_, [])
         for socket in ready_wsockets:
             try:

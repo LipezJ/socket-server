@@ -19,9 +19,9 @@ while True:
     if post == '0':
         break
     if len(room) > 0:
-        s.roomDo(room, 'post', {'post': post})
+        s.roomDo ('post', room, {'post': post})
     elif len(to) > 0:
-        s.userDo(to, 'post', {'post': post})
+        s.userDo('post', to, {'post': post})
 
 s.roomDo('leaveAll')
 
