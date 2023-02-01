@@ -27,7 +27,7 @@ class serverCiclo(socketServer):
                         host, id = address
                         self.sockets.add(str(id), client)
                         client.send(pickle.dumps({'id': str(id)}))
-                        print(address, 'conectado')
+                        print(id, 'conectado')
                     else:
                         try:
                             data = socket.recv(1024)
