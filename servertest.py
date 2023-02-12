@@ -1,4 +1,3 @@
-import pickle
 import threading
 import time
 import psutil
@@ -6,14 +5,13 @@ import os
 
 import servers
 
-def mensaje(data, client):
-    print(data['post'], end=' ')
-    client.send(pickle.dumps({'func': 'post', 'data':{'post': data['post']}}))
+def mem(data, client):
     process = psutil.Process(pid=os.getpid())
     print('mem =', process.memory_info().rss / (1024 * 1024), end=' -> ')
+    print('hola desde el cliente')
 
 server = servers.serverMultiHilos('localhost', 8080)
-server.addFunction('mensaje', mensaje)
+server.addFunction('mem', mem)
 
 def sendAll():
     time.sleep(15)

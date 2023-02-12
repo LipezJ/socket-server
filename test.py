@@ -22,6 +22,7 @@ while True:
         s.roomDo ('post', room, {'post': post})
     elif len(to) > 0:
         s.userDo('post', to, {'post': post})
+    #s.do('mem', {})
 
 s.roomDo('leaveAll')
 
