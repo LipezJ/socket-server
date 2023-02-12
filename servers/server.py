@@ -52,7 +52,7 @@ class socketServer:
     
     def sendToRoom(self, data, client):
         if data['id'] in self.rooms[data['room']]:
-            list_ = [self.sockets.bySocket[i] for i in self.rooms[data['room']]]
+            list_ = [self.sockets.bySocket[i] for i in self.rooms[data['room']] if (i != data['id'] or data['broad'])]
             _, ready_wsockets, err = select.select(list_, list_, [])
             for socket in ready_wsockets:
                 try:

@@ -15,7 +15,7 @@ if len(room) > 0:
 to = input('usuario: ')
 
 while True:
-    post = input('mensaje: ')
+    post = input()
     if post == '0':
         break
     if len(room) > 0:
