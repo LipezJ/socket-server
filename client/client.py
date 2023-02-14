@@ -67,3 +67,6 @@ class Client:
     def join(self, room: str):
         self.socket_.send(pickle.dumps({'func':'join', 'data':{'room': room, 'id': self.id}}))
         self.rooms.append(room)
+    
+    def close(self):
+        self.socket_.close()

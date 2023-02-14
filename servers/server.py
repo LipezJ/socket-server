@@ -44,7 +44,7 @@ class socketServer:
     def leave(self, data, client):
         if data['id'] in self.rooms[data['room']]:
             if len(self.rooms[data['room']]) < 2:
-                del self.rooms[room]
+                del self.rooms[data['room']]
                 print('sala eliminada')
             else:
                 self.rooms[data['room']].remove(data['id'])

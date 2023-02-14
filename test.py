@@ -3,7 +3,7 @@ import client
 def printPost(data, socket_):
     print('-> ', data['post'])
 
-s = client.Client('localhost', 8080)
+s = client.Client('8.tcp.ngrok.io', 17402)
 s.connect()
 
 s.addFunction('post', printPost)
@@ -15,7 +15,7 @@ if len(room) > 0:
 to = input('usuario: ')
 
 while True:
-    post = input()
+    post = input('')
     if post == '0':
         break
     if len(room) > 0:
@@ -26,4 +26,4 @@ while True:
 
 s.roomDo('leaveAll')
 
-s.socket_.close()
+s.close()
