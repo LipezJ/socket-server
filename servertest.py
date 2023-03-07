@@ -13,11 +13,4 @@ def mem(data, client):
 server = servers.serverMultiHilos('localhost', 8080)
 server.addFunction('mem', mem)
 
-def sendAll():
-    time.sleep(15)
-    server.sendAll({'func': 'post', 'data':{'post': 'hola mundo'}})
-
-r = threading.Thread(target=sendAll, daemon=True)
-r.start()
-
 server.startServer()

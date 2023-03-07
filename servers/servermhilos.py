@@ -30,6 +30,19 @@ class serverMultiHilos(socketServer):
                     data = pickle.loads(data)
                     if 'func' in data:
                         self.functions[data['func']](data['data'], socket)
+
+    def startServer(self):
+        self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server.bind((self.host, self.port))
+        self.server.listen(120)
+        while True:
+            client, address = self.server.accept()
+            host, id = address
+            self.sockets[str(id)] = client
+            client.send(pickle.dumps({'id': str(id)}))
+            print(address, 'conectado')
+            thread = threading.Thread(target=self._handleSocket, args=(client, str(id)), daemon=True)
+            thread.start()
     
     #func to send
     def sendAll(self, data):
@@ -57,16 +70,3 @@ class serverMultiHilos(socketServer):
             self.sockets[data['idSender']].send(pickle.dumps(data['data']))
         else:
             print('este usuario no existe')
-    
-    def startServer(self):
-        self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server.bind((self.host, self.port))
-        self.server.listen(120)
-        while True:
-            client, address = self.server.accept()
-            host, id = address
-            self.sockets[str(id)] = client
-            client.send(pickle.dumps({'id': str(id)}))
-            print(address, 'conectado')
-            thread = threading.Thread(target=self._handleSocket, args=(client, str(id)), daemon=True)
-            thread.start()

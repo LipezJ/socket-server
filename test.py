@@ -3,7 +3,7 @@ import client
 def printPost(data, socket_):
     print('-> ', data['post'])
 
-s = client.Client('8.tcp.ngrok.io', 17402)
+s = client.Client('localhost', 8080)
 s.connect()
 
 s.addFunction('post', printPost)
