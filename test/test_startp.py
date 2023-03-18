@@ -1,6 +1,4 @@
-import client
 import os
-
 from client import Client
 
 def eject(data, socket_):
